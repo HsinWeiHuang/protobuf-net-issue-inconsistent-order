@@ -800,8 +800,17 @@ namespace ProtoBuf.Meta
             var members = new List<ProtoMemberAttribute>();
             var enumMembers = new List<EnumMember>();
 
+	    // the GetMembers() does not return members in a particular order
             MemberInfo[] foundList = Type.GetMembers(isEnum ? BindingFlags.Public | BindingFlags.Static
                 : BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            if (foundList.Length > 2)
+            {
+                // mess up the foundList
+                MemberInfo m0 = foundList[0], m2 = foundList[2];
+                foundList[0] = m2;
+                foundList[2] = m0;
+            }
 
             foreach (MemberInfo member in foundList)
             {
